@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//LoginGet
+//LoginGet implemented
 exports.loginGet = (req, res) => {
   res.sendFile("Static/login.html", { root: "." });
 };
@@ -22,21 +22,25 @@ exports.loginPost = (req, res) => {
         if (row[0] === undefined) {
           res.send("User doesn't exist on the database");
         } else {
-          console.log(row[0]["password"]);
+          console.log(row[0]["salt"]);
+          console.log(password);
+          let saltedPass = password + row[0]["salt"];
+          console.log(saltedPass);
 
           let crypto = require("crypto");
-          let saltedPass = password + row[0]["hash"];
-          const hash = crypto
+          const hashedPass = crypto
             .createHash("sha256")
             .update(saltedPass)
-            .digest(base64);
-          if (row[0]["password"] == hash) {
-            req.session.eno = row[0].enrollmentNo;
-
-            console.log("login successful");
-            res.redirect("/dashboard");
+            .digest("base64");
+          if (row[0]["password"] == hashedPass) {
+            console.log("Login successful");
+            // res.redirect("/dashboard");
+          } else {
+            res.send("Entered password is incorrect");
           }
         }
+      } else {
+        console.log(err);
       }
     }
   );
@@ -65,43 +69,51 @@ exports.signupPost = (req, res) => {
   let password = req.body.password;
   let passwordC = req.body.passwordC;
   let crypto = require("crypto");
-  var salt = salt(7);
-  console.log(salt);
-  let saltedPass = password + salt; //made salted password with salt as prefix
-  const hash = crypto.createHash("sha256").update(saltedPass).digest("base64"); //hash generated
+  let PassSalt = salt(7);
+  console.log(PassSalt);
+  let saltedPass = password + PassSalt; //made salted password with salt as suffix
+  const hashedPass = crypto
+    .createHash("sha256")
+    .update(saltedPass)
+    .digest("base64"); //hash generated
 
   db.query(
     "SELECT * FROM users WHERE enrollmentNo = " + db.escape(enroll) + ";",
-    (err, row) => {
-      console.log(row);
-      if (row[0] === undefined) {
-        console.log("New User");
-        if (password == passwordC) {
-          db.query(
-            "INSERT INTO users (username,salt,enrollmentNo,password) VALUES(" +
-              db.escape(username) +
-              ", " +
-              db.escape(hash) +
-              ", " +
-              db.escape(enroll) +
-              ", " +
-              db.escape(password) +
-              ");",
-            (err, row) => {
-              if (!err) {
-                console.log("Database updated with new user");
-                res.redirect("/");
-              } else {
-                console.log(err);
+    (err, rows) => {
+      if (!err) {
+        if (rows[0] === undefined) {
+          console.log("New User");
+          if (password == passwordC) {
+            db.query(
+              "INSERT INTO users (username,salt,enrollmentNo,password) VALUES(" +
+                db.escape(username) +
+                ", " +
+                db.escape(PassSalt) +
+                ", " +
+                db.escape(enroll) +
+                ", " +
+                db.escape(hashedPass) +
+                ");",
+              (err, row) => {
+                if (!err) {
+                  console.log("Database updated with new User");
+                  res.redirect("/");
+                } else {
+                  console.log(err);
+                }
               }
-            }
-          );
+            );
+          } else {
+            res.send("Both passwords are not the same :( ");
+          }
         } else {
-          res.send("Both passwords are not the same :(");
+          res.send("User already exists!");
         }
+      } else {
+        console.log(err);
       }
     }
   );
 };
 
-exports.logout = (req, res) => {};
+// exports.logout = (req, res) => {};
