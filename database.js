@@ -8,3 +8,5 @@ const connection = mysql.createPool({
   password: process.env.MYSQL_PASS,
   multipleStatements: true,
 });
+
+module.exports = connection;
