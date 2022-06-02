@@ -33,10 +33,15 @@ exports.loginPost = (req, res) => {
             .update(saltedPass)
             .digest("base64");
           if (row[0]["password"] == hashedPass) {
+            req.session.eno = row[0].enrollmentNo;
+            req.session.loggedin = true;
+            req.session.name = row[0].username;
+
             console.log("Login successful");
-            // res.redirect("/dashboard");
+            res.redirect("/dashboard");
           } else {
             res.send("Entered password is incorrect");
+            console.log("admin login unsuccessful");
           }
         }
       } else {
@@ -116,4 +121,9 @@ exports.signupPost = (req, res) => {
   );
 };
 
-// exports.logout = (req, res) => {};
+exports.logout = (req, res) => {
+  console.log(req.session);
+  // res.clearCookie(req.session.name);
+  req.session.destroy();
+  res.redirect("/");
+};

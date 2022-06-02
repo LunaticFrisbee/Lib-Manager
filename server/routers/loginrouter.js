@@ -10,4 +10,7 @@ router.post("/", logincontroller.loginPost);
 router.get("/signup", logincontroller.signupGet);
 router.post("/signup", logincontroller.signupPost);
 
+//routing for logout
+router.get("/logout", logincontroller.logout);
+
 module.exports = router;

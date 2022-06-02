@@ -1,0 +1,37 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin's Dashboard</title>
+  </head>
+  <body>
+    {{!-- <button onclick="window.location='/dashboard/checkoutList';">Your Checkouts</button> --}}
+    <button>View Requests for Check-In</button>
+    <br>
+    <button>View Requests for Check-Out</button>
+    <br>
+    <button>Add Books</button>
+    <button>Remove Books</button>
+    <br><br>
+    <table>
+      <tr>
+        <th style="padding: 4px">ID</th>
+        <th style="padding: 4px">Book</th>
+        <th style="padding: 4px">Quantity</th>
+        <th style="padding: 4px"></th>
+        <th style="padding: 4px"></th>
+      </tr>
+
+      {{{body}}}
+
+    </table>
+    <br />
+    <button class="logout-btn" onclick="window.location='/admin/logout'">
+      Logout
+    </button>
+  </body>
+  <script src="../../scripts/check.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</html>

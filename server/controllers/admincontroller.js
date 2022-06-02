@@ -30,9 +30,14 @@ exports.loginPost = (req, res) => {
             .createHash("sha256")
             .update(saltedPass)
             .digest("base64");
+          console.log(hashedPass);
           if (row[0]["password"] == hashedPass) {
             console.log("Admin login successful");
-            // res.redirect("/dashboard")
+            req.session.admin = true;
+            req.session.name = row[0]["username"];
+            console.log(req.session.name);
+            console.log(req.session.admin);
+            res.redirect("/admin/admin-dashboard");
           } else {
             res.send("Entered password is incorrect");
           }
@@ -42,4 +47,24 @@ exports.loginPost = (req, res) => {
       }
     }
   );
+};
+
+//
+exports.dashboardView = (req, res) => {
+  if (req.session.admin) {
+    db.query("SELECT * from books;", (err, data) => {
+      if (err) throw err;
+      console.log(data);
+      res.render("admin-dashboard", { layout: "admindashLayout", data: data });
+    });
+  } else {
+    res.redirect("/admin/logout");
+  }
+};
+
+// Logout
+exports.logout = (req, res) => {
+  res.clearCookie(req.session.name);
+  req.session.destroy();
+  res.redirect("/admin");
 };
