@@ -41,7 +41,7 @@ exports.loginPost = (req, res) => {
             res.redirect("/dashboard");
           } else {
             res.send("Entered password is incorrect");
-            console.log("admin login unsuccessful");
+            console.log("Login unsuccessful");
           }
         }
       } else {

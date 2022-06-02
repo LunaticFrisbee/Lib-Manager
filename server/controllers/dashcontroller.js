@@ -7,7 +7,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //Viewing Dashboard
 exports.dashboardView = (req, res) => {
-  db.query("SELECT * FROM books;", (err, data) => {
+  db.query("SELECT isbn, title, quantity FROM books;", (err, data) => {
     if (!err) {
       console.log(data);
       res.render("dashboard", { layout: "dashboardlayout", data: data });
@@ -19,19 +19,21 @@ exports.dashboardView = (req, res) => {
 
 //Viewing CheckOut-List
 exports.viewCheckoutList = (req, res) => {
-  db.query("SELECT id, title, quantity FROM books ;", (err, data) => {
-    if (!err) {
+  db.query(
+    "SELECT book, isbn FROM request WHERE enrollmentNo = " +
+      db.escape(req.session.eno) +
+      ";",
+    (err, data) => {
+      if (err) throw err;
       console.log(data);
       res.render("checkoutList", { layout: "checkoutListLayout", data: data });
-    } else {
-      throw err;
     }
-  });
+  );
 };
 
 // exports.RequestOut = (req, res) => {
 //   const bookID = req.body.bookID;
-//   db.query("INSERT INTTO requests() VALUES (" + "", (err, data) => {
+//   db.query("INSERT INTO requests() VALUES (" + "", (err, data) => {
 //     if (err) throw err;
 //   });
 //   res.sent("Request for Check-out sent to Admin");
