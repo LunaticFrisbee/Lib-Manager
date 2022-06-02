@@ -35,14 +35,11 @@ function removeFn(id) {
 }
 
 function approveFn(id1, id2, id3) {
-  bookID = id1;
-  bookName = id2;
-  enrollmentNo = id3;
   axios
     .post("/admin/admin-dashboard/requests/approve", {
-      bookID: bookID,
-      bookName: bookName,
-      enrollmentNo: enrollmentNo,
+      bookID: id1,
+      bookName: id2,
+      enrollmentNo: id3,
     })
     .then((res) => {
       window.location.href =

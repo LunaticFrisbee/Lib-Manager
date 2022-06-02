@@ -1,4 +1,5 @@
 const express = require("express");
+const { ExpressHandlebars } = require("express-handlebars");
 const db = require("../../database");
 const app = express();
 
@@ -63,6 +64,48 @@ exports.viewCheckoutList = (req, res) => {
   );
 };
 
-// exports.handIn = (req, res) => {
-//   const bookID = req.body.bookID;
-// };
+//Hand In
+exports.handIn = (req, res) => {
+  const bookID = req.body.bookID;
+  db.query(
+    "SELECT * FROM books where isbn = " + db.escape(bookID) + ";",
+    (err, data) => {
+      if (err) throw err;
+      const z = data[0]["quantity"] + 1;
+      db.query(
+        "UPDATE books SET quantity = " +
+          db.escape(z) +
+          "WHERE isbn = " +
+          db.escape(bookID) +
+          ";",
+        (err, row) => {
+          if (err) throw err;
+          console.log(row);
+          db.query(
+            "SELECT * FROM request WHERE isbn = " +
+              db.escape(bookID) +
+              " AND enrollmentNo = " +
+              db.escape(req.session.eno) +
+              ";",
+            (err, row) => {
+              if (err) throw err;
+              console.log(row);
+              db.query(
+                "DELETE FROM request WHERE isbn = " +
+                  db.escape(bookID) +
+                  " AND enrollmentNo = " +
+                  db.escape(req.session.eno) +
+                  ";",
+                (err, row) => {
+                  if (err) throw err;
+                  console.log(row);
+                  res.redirect("/dashbaord/checkoutList");
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
+};

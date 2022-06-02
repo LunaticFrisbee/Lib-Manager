@@ -126,7 +126,7 @@ exports.removeBooksView = (req, res) => {
 exports.removeBooks = (req, res) => {
   const quantity = req.body.quantity;
   const isbn = req.body.bookID;
-  console.log(req.body); // undefined kyu aa rhe hain
+  console.log(req.body);
   db.query(
     "SELECT isbn, title, quantity FROM books WHERE isbn = " +
       db.escape(isbn) +

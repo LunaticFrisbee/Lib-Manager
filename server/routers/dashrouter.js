@@ -10,6 +10,7 @@ router.get(
   middleware.userAuth,
   dashcontroller.viewCheckoutList
 );
-// router.post("/checkin", dashcontroller.handIn);
+
+router.post("/checkin", middleware.userAuth, dashcontroller.handIn);
 
 module.exports = router;
