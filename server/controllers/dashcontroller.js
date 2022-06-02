@@ -17,11 +17,43 @@ exports.dashboardView = (req, res) => {
   });
 };
 
+exports.RequestOut = (req, res) => {
+  const bookID = req.body.bookID;
+  db.query(
+    "SELECT title, isbn FROM books WHERE isbn = " + db.escape(bookID) + ";",
+    (err, row) => {
+      if (err) throw err;
+      console.log(row[0]);
+      if (row[0] === undefined) {
+        res.send("abcd"); // yahan error handling krni hai
+      } else {
+        let status = 0;
+        db.query(
+          "INSERT INTO request (enrollmentNo, book, status, isbn) VALUES (" +
+            db.escape(req.session.eno) +
+            ", " +
+            db.escape(row[0]["title"]) +
+            ", " +
+            db.escape(status) +
+            ", " +
+            db.escape(bookID) +
+            ");",
+          (err, data) => {
+            if (err) throw err;
+            res.redirect("/dashboard");
+          }
+        );
+      }
+    }
+  );
+};
+
 //Viewing CheckOut-List
 exports.viewCheckoutList = (req, res) => {
   db.query(
     "SELECT book, isbn FROM request WHERE enrollmentNo = " +
       db.escape(req.session.eno) +
+      " AND status=1" +
       ";",
     (err, data) => {
       if (err) throw err;
@@ -31,18 +63,6 @@ exports.viewCheckoutList = (req, res) => {
   );
 };
 
-// exports.RequestOut = (req, res) => {
+// exports.handIn = (req, res) => {
 //   const bookID = req.body.bookID;
-//   db.query("INSERT INTO requests() VALUES (" + "", (err, data) => {
-//     if (err) throw err;
-//   });
-//   res.sent("Request for Check-out sent to Admin");
-// };
-
-// exports.RequestIn = (req, res) => {
-//   const bookID = req.body.bookID;
-//   db.query("", (err, data) => {
-//     if (err) throw err;
-//     res.send("Request for Check-in sent to Admin");
-//   });
 // };

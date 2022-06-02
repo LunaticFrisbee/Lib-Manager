@@ -7,12 +7,10 @@
   </head>
   <body>
     {{!-- <button onclick="window.location='/dashboard/checkoutList';">Your Checkouts</button> --}}
-    <button>View Requests for Check-In</button>
+    <button onclick="window.location='/admin/admin-dashboard/requests';">View Requests for Check-Out</button>
     <br>
-    <button>View Requests for Check-Out</button>
-    <br>
-    <button>Add Books</button>
-    <button>Remove Books</button>
+    <button onclick="window.location='/admin/admin-dashboard/addBooks';">Add Books</button>
+    <button onclick="window.location='/admin/admin-dashboard/removeBooks';">Remove Books</button>
     <br><br>
     <table>
       <tr>
@@ -31,7 +29,7 @@
       Logout
     </button>
   </body>
-  <script src="../../scripts/check.js"></script>
+  <script src="/scripts/checks.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </html>
