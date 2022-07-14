@@ -26,7 +26,7 @@ exports.RequestOut = (req, res) => {
       if (err) throw err;
       console.log(row[0]);
       if (row[0] === undefined) {
-        res.send("abcd"); // yahan error handling krni hai
+        res.send("Current book not available right now :/");
       } else {
         let status = 0;
         db.query(
